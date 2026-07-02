@@ -52,6 +52,7 @@ def show_menu() -> None:
     print("5. 프롬프트 상세 보기")
     print("6. 즐겨찾기 관리")
     print("7. 즐겨찾기 목록")
+    print("8. 전체 내보내기 (카테고리별, md)")
     print("0. 종료")
 
 
@@ -218,6 +219,50 @@ def favorites_list(prompts: List[Dict]) -> None:
                         break
 
 
+def export_markdown(prompts: List[Dict]) -> None:
+    """Export all prompts grouped by category into a markdown file.
+
+    Prompts are grouped by category (sorted). User provides a filename.
+    Empty filename cancels and returns to main menu.
+    """
+    print("\n[전체 내보내기 (카테고리별, md)]")
+    fname = input("파일명 (확장자 포함, 빈 입력시 취소): ").strip()
+    if not fname:
+        print("내보내기 취소")
+        return
+    if not fname.lower().endswith('.md'):
+        fname += '.md'
+
+    # group by category
+    cats = sorted({p.get('category', '(분류없음)') for p in prompts})
+    lines: List[str] = []
+    lines.append('# Prompts by Category')
+    lines.append('')
+    if not cats:
+        lines.append('(프롬프트가 없습니다)')
+    else:
+        for cat in cats:
+            lines.append(f'## {cat}')
+            lines.append('')
+            items = [p for p in prompts if p.get('category', '(분류없음)') == cat]
+            for p in items:
+                star = '★' if p.get('favorite') else ''
+                lines.append(f"- **{p.get('title')}** {star}")
+                content = p.get('content', '')
+                if content:
+                    # blockquote each line
+                    for ln in content.splitlines():
+                        lines.append('> ' + ln)
+                lines.append('')
+
+    try:
+        with open(fname, 'w', encoding='utf-8') as f:
+            f.write('\n'.join(lines))
+        print(f"내보내기 완료: {fname}")
+    except Exception as e:
+        print(f"파일 저장 실패: {e}")
+
+
 def handle_choice(choice: str, prompts: List[Dict]) -> bool:
     if choice == "1":
         prompt_list(prompts)
@@ -233,6 +278,8 @@ def handle_choice(choice: str, prompts: List[Dict]) -> bool:
         favorites_manage(prompts)
     elif choice == "7":
         favorites_list(prompts)
+    elif choice == "8":
+        export_markdown(prompts)
     elif choice == "0":
         print("프로그램을 종료합니다.")
         return False
