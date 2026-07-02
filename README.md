@@ -22,3 +22,6 @@ python3 hello.py
 ```
 
 메인 메뉴에서 번호를 입력하여 기능을 선택합니다. 대부분의 하위 메뉴에서 `b`를 입력하면 메인 메뉴로 돌아갑니다.
+
+## git
+https://github.com/a0000000033a/codyssey-a1-1
