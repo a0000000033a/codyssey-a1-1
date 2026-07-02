@@ -92,13 +92,26 @@ def prompt_list(prompts: List[Dict]) -> None:
 
 
 def prompt_add(prompts: List[Dict]) -> None:
-    print("\n[프롬프트 추가] (빈 입력시 취소)")
-    title = input("제목: ").strip()
-    if not title:
-        print("추가 취소")
-        return
-    content = input("내용: ").strip()
-    category = input("카테고리: ").strip()
+    print("\n[프롬프트 추가]")
+    # 제목, 내용, 카테고리는 빈값 허용하지 않고 재입력 요구
+    while True:
+        title = input("제목: ").strip()
+        if title:
+            break
+        print("제목은 빈 값일 수 없습니다. 다시 입력하세요.")
+
+    while True:
+        content = input("내용: ").strip()
+        if content:
+            break
+        print("내용은 빈 값일 수 없습니다. 다시 입력하세요.")
+
+    while True:
+        category = input("카테고리: ").strip()
+        if category:
+            break
+        print("카테고리는 빈 값일 수 없습니다. 다시 입력하세요.")
+
     fav = input("즐겨찾기 등록? (y/N): ").strip().lower() == "y"
     prompts.append({
         "title": title,
